@@ -1,0 +1,61 @@
+name: ci/cd
+
+on:
+  push:
+    branches: [ "main" , "master"]
+
+jobs:
+  build-and-push-to-registry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: type=raw,value=latest
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy-to-nomad:
+    needs: build-and-push-to-registry
+    runs-on: ubuntu-latest
+    env:
+      NOMAD_JOB_FILE: ./job.nomad.hcl
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Nomad CLI
+        run: |
+          wget https://releases.hashicorp.com/nomad/1.6.3/nomad_1.6.3_linux_amd64.zip
+          unzip nomad_1.6.3_linux_amd64.zip
+          sudo mv nomad /usr/local/bin/
+
+      - name: Validate Nomad Job
+        run: |
+          nomad job validate ${{ env.NOMAD_JOB_FILE }}
+
+      - name: Deploy to Nomad
+        env:
+          NOMAD_ADDR: ${{ secrets.NOMAD_ADDR }}
+          NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
+        run: |
+          nomad job run -verbose ${{ env.NOMAD_JOB_FILE }}
