@@ -1,21 +1,21 @@
-job "NAME" { 
+job "imap-api" {
   datacenters = ["dc1"]
   type        = "service"
   meta        = {
     "version" = "0.0.1"
   }
 
-  group "NAME-group" {
+  group "imap-api-group" {
 
     count = 1
 
     network {
       port "http" {
-        static = PORT #  <<< Внешний порт
+        static = 3000 #  <<< Внешний порт
       }
     }
 
-    task "NAME-task" { #  
+    task "imap-api-task" {
 
       driver = "docker"
 
@@ -29,7 +29,7 @@ job "NAME" {
       }
 
       config {
-        image      = "https://ghcr.io/PATH:latest" #  <<< ПУТЬ К КОНТЕЙНЕРУ
+        image      = "https://ghcr.io/nidzh/imap-api:latest" #  <<< ПУТЬ К КОНТЕЙНЕРУ
         ports      = ["http"]
         force_pull = true
         auth       = {
@@ -40,8 +40,8 @@ job "NAME" {
 
 
       resources {
-        cpu    = 500 
-        memory = 256 
+        cpu    = 1000
+        memory = 1024
       }
     }
   }
