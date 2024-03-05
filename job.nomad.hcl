@@ -11,7 +11,6 @@ job "imap-api" {
 
     network {
       port "http" {
-        static = 3000 #  <<< Внешний порт
       }
     }
 
