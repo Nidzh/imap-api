@@ -10,8 +10,8 @@ job "imap-api" {
     count = 1
 
     network {
-      port "http" {
-      }
+      port "http" { to = 5050 }
+
     }
 
     task "imap-api-task" {
