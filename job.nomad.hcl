@@ -2,7 +2,7 @@ job "imap-api" {
   datacenters = ["dc1"]
   type        = "service"
   meta        = {
-    "version" = "0.0.1"
+    "version" = "0.0.2"
   }
 
   group "imap-api-group" {
