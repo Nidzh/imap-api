@@ -20,7 +20,7 @@ let workerAssigned = new WeakMap();
 let workers = new Map();
 let availableIMAPWorkers = new Set();
 
-let spawnWorker = type => {
+let spawnWorker = (type) => {
     if (closing) {
         return;
     }

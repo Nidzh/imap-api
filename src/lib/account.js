@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const { MessageChannel } = require('worker_threads');
 const { MessagePortReadable } = require('./message-port-stream');
 const { deepStrictEqual } = require('assert');
+var CryptoJS = require("crypto-js");
 
 class Account {
     constructor(options) {
@@ -59,7 +60,8 @@ class Account {
                 case 'smtp':
                 case 'lastErrorState':
                     try {
-                        result[key] = JSON.parse(accountData[key]);
+                        var bytes  = AES.decrypt(accountData[key], 'secret_key');
+                        result[key] = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
                     } catch (err) {
                         logger.error({ msg: 'Failed to parse input from Redis', key, err });
                     }
@@ -80,7 +82,7 @@ class Account {
                 case 'imap':
                 case 'smtp':
                     try {
-                        result[key] = JSON.stringify(accountData[key]);
+                        result[key] = CryptoJS.AES.encrypt(JSON.stringify(accountData[key]), 'secret_key').toString();
                     } catch (err) {
                         logger.error({ msg: 'Failed to stringify input for Redis', key, err });
                     }

@@ -20,6 +20,7 @@
         "@hapi/joi": "17.1.0",
         "@hapi/vision": "6.0.0",
         "bull": "3.13.0",
+        "crypto-js": "^4.2.0",
         "exponential-backoff": "2.2.0",
         "hapi-pino": "6.5.0",
         "hapi-swagger": "12.1.1",
