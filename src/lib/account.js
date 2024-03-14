@@ -72,6 +72,7 @@ class Account {
                     break;
             }
         });
+        console.log(result);
         return result;
     }
 
