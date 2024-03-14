@@ -60,7 +60,7 @@ class Account {
                 case 'smtp':
                 case 'lastErrorState':
                     try {
-                        var bytes  = AES.decrypt(accountData[key], 'secret_key');
+                        var bytes  = CryptoJS.AES.decrypt(accountData[key], 'secret_key');
                         result[key] = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
                     } catch (err) {
                         logger.error({ msg: 'Failed to parse input from Redis', key, err });
@@ -72,7 +72,6 @@ class Account {
                     break;
             }
         });
-        console.log(result);
         return result;
     }
 

@@ -2,18 +2,18 @@ job "imap-api" {
   datacenters = ["dc1"]
   type        = "service"
   meta        = {
-    "version" = "0.0.6"
+    "version" = "0.0.7"
   }
 
   group "imap-api-group" {
 
     count = 1
 
-     network {
-    port "http" {
-      static = 3000
-      to = 3000
-    }
+    network {
+      port "http" {
+        static = 3000
+        to     = 3000
+      }
     }
 
     task "imap-api-task" {
@@ -30,11 +30,11 @@ job "imap-api" {
       }
 
       config {
-        image      = "https://ghcr.io/nidzh/imap-api:latest" #  <<< ПУТЬ К КОНТЕЙНЕРУ
-        ports      = ["http"]
-        force_pull = true
+        image       = "https://ghcr.io/nidzh/imap-api:latest" #  <<< ПУТЬ К КОНТЕЙНЕРУ
+        ports       = ["http"]
+        force_pull  = true
         interactive = true
-        auth       = {
+        auth        = {
           username = "${GITHUB_USERNAME}"
           password = "${GITHUB_TOKEN}"
         }
